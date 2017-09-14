@@ -4,15 +4,16 @@ add_source "https://gems.ruby-china.org"
 insert_into_file '.gitignore', :after => "# Ignore all logfiles and tempfiles." do
   <<-CODE
       \nconfig/database.yml
-      \nconfig/secrets.yml
-      \nconfig/application.yml
-      \n.vscode/
+      config/secrets.yml
+      config/application.yml
+      .vscode/
   CODE
 end
   
 insert_into_file 'Gemfile', "\nruby '2.3.1'\n", after: "source 'https://rubygems.org'\n"
   
 gem_group :development, :test do
+  gem 'factory_girl_rails'
   gem 'brakeman'
   gem 'bundler-audit'
   gem "rspec-rails"
@@ -245,7 +246,7 @@ deploy to stage:
   only:
     - master
   variables:
-    DAOCLOUD_APP_ID: 182ef9e0-3803-4bcb-884b-bf0b8edb2630 
+    DAOCLOUD_APP_ID: 123344444 
     RELEASE_NAME: production-stage-$CI_BUILD_REF-$GITLAB_USER_ID
     CONTAINER_IMAGE: daocloud.io/skio_dep/#{app_name}_preproduction:$CI_BUILD_REF-$GITLAB_USER_ID
 
@@ -307,11 +308,12 @@ CODE
 after_bundle do
   git :init
   remove_dir "test"
+
+  rails_command "g rspec:install"
+  generate(:controller, "welcome", "index")
+  route "root to: 'welcome#index'"
+  rails_command("db:migrate") 
   copy_file 'config/database.yml', 'config/database.yml.example'
   copy_file 'config/secrets.yml', 'config/secrets.yml.example'
   copy_file 'config/environments/production.rb', 'config/environments/pre_production.rb'
-  gem install rspec
-  generate(:controller, "welcome")
-  route "root to: 'welcome#index'"
-  rails_command("db:migrate") 
 end
