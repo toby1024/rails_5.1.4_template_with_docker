@@ -3,10 +3,10 @@ add_source "https://gems.ruby-china.org"
 
 insert_into_file '.gitignore', :after => "# Ignore all logfiles and tempfiles." do
   <<-CODE
-      \nconfig/database.yml
-      config/secrets.yml
-      config/application.yml
-      .vscode/
+\nconfig/database.yml
+config/secrets.yml
+config/application.yml
+.vscode/
   CODE
 end
   
@@ -307,13 +307,12 @@ CODE
 
 after_bundle do
   git :init
-  remove_dir "test"
-
+  remove_dir "./test"
   rails_command "g rspec:install"
   generate(:controller, "welcome", "index")
   route "root to: 'welcome#index'"
   rails_command("db:migrate") 
-  copy_file 'config/database.yml', 'config/database.yml.example'
-  copy_file 'config/secrets.yml', 'config/secrets.yml.example'
-  copy_file 'config/environments/production.rb', 'config/environments/pre_production.rb'
+  copy_file './config/database.yml', './config/database.yml.example'
+  copy_file './config/secrets.yml', './config/secrets.yml.example'
+  copy_file './config/environments/production.rb', './config/environments/pre_production.rb'
 end

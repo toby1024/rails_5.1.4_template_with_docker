@@ -1,6 +1,7 @@
 # rails template
 
 # warning
+- 基于rails5.1.4镜像
 - 注意修改生成的dockerfile的环境变量 
 
 ## usage
@@ -16,5 +17,3 @@
 - add cocker files
 - add gitlib ci file
 - use passenger
-
-
